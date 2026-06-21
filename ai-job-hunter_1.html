@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Job Hunter – Jagadeesh Dolu</title>
+<meta name="description" content="AI Job Hunter Agent — upload your resume and cover letter to get matched job roles, skill gap analysis and resume tips, powered by n8n + GPT-4o-mini."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{--bg:#0F172A;--card:#1E293B;--primary:#38BDF8;--secondary:#8B5CF6;--text:#F1F5F9;--muted:#94A3B8;--border:rgba(255,255,255,0.08);--success:#10B981;--warning:#F59E0B;--error:#EF4444}
+  html{scroll-behavior:smooth}
+  body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6;padding:0 0 60px}
+  ::-webkit-scrollbar{width:6px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--primary),var(--secondary));border-radius:3px}
+
+  .topbar{display:flex;align-items:center;justify-content:space-between;max-width:760px;margin:0 auto;padding:1.6rem 1.2rem 0}
+  .back-link{display:inline-flex;align-items:center;gap:6px;color:var(--muted);text-decoration:none;font-size:0.88rem;font-weight:600;transition:color 0.2s}
+  .back-link:hover{color:var(--primary)}
+  .badge-pill{font-family:'JetBrains Mono',monospace;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);border-radius:30px;padding:5px 14px}
+
+  .header{text-align:center;max-width:700px;margin:2.4rem auto 2.6rem;padding:0 1.2rem;animation:fadeInUp 0.7s ease}
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .header-icon{width:56px;height:56px;border-radius:16px;margin:0 auto 1.2rem;background:linear-gradient(135deg,var(--primary),var(--secondary));display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 10px 30px rgba(56,189,248,0.3)}
+  h1{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(2rem,6vw,2.8rem);background:linear-gradient(135deg,var(--primary) 0%,var(--secondary) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.15;margin-bottom:0.7rem}
+  .subtitle{color:var(--muted);font-size:1rem}
+
+  .wrap{max-width:700px;margin:0 auto;padding:0 1.2rem}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:1.5rem;margin-bottom:1.2rem;transition:border-color 0.3s}
+  .card-label{font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--primary);letter-spacing:0.12em;text-transform:uppercase;margin-bottom:1rem}
+
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:560px){.row{grid-template-columns:1fr}}
+  .field{display:flex;flex-direction:column;gap:7px;margin-bottom:1.1rem;position:relative}
+  .field:last-child{margin-bottom:0}
+  label{font-size:0.82rem;color:var(--muted);font-weight:600}
+
+  input,select,textarea{
+    width:100%;background:rgba(15,23,42,0.6);border:1.5px solid var(--border);
+    border-radius:10px;padding:0.7rem 0.9rem;color:var(--text);font-size:0.92rem;
+    font-family:'DM Sans',sans-serif;outline:none;transition:border-color 0.2s,box-shadow 0.2s;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(56,189,248,0.12)}
+  textarea{resize:vertical;line-height:1.7}
+  select option{background:#0f172a}
+
+  .chips-selected{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.6rem}
+  .chips-selected:empty{display:none}
+  .chip{
+    display:inline-flex;align-items:center;gap:6px;padding:5px 8px 5px 14px;border-radius:20px;
+    font-size:0.82rem;font-weight:600;background:rgba(56,189,248,0.15);color:#7dd3fc;
+    border:1.5px solid var(--primary);
+  }
+  .chip button{
+    background:rgba(255,255,255,0.08);border:none;color:#7dd3fc;cursor:pointer;
+    width:18px;height:18px;border-radius:50%;font-size:0.78rem;line-height:1;
+    display:flex;align-items:center;justify-content:center;
+  }
+  .chip button:hover{background:rgba(255,255,255,0.18)}
+
+  .dropdown-input-wrap{position:relative}
+  .dropdown-panel{
+    position:absolute;top:calc(100% + 6px);left:0;right:0;z-index:30;
+    background:#0f172a;border:1.5px solid var(--border);border-radius:12px;
+    max-height:230px;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,0.5);
+    display:none;
+  }
+  .dropdown-panel.open{display:block}
+  .dropdown-opt{
+    padding:0.6rem 0.9rem;font-size:0.88rem;cursor:pointer;color:var(--text);
+    display:flex;align-items:center;justify-content:space-between;transition:background 0.12s;
+  }
+  .dropdown-opt:hover,.dropdown-opt.hl{background:rgba(56,189,248,0.1)}
+  .dropdown-opt.picked{color:var(--muted)}
+  .dropdown-opt.picked .ck{color:var(--success);font-weight:700}
+  .dropdown-empty{padding:0.8rem 0.9rem;font-size:0.85rem;color:var(--muted)}
+  .count-tag{font-size:0.78rem;color:var(--muted);font-weight:500}
+
+  .file-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:560px){.file-row{grid-template-columns:1fr}}
+  .upload-zone{
+    border:1.5px dashed var(--border);border-radius:14px;padding:1.4rem 1rem;
+    text-align:center;cursor:pointer;transition:all 0.2s;background:rgba(15,23,42,0.4);
+  }
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--primary);background:rgba(56,189,248,0.06)}
+  .upload-zone .u-icon{font-size:1.6rem;margin-bottom:0.4rem}
+  .upload-zone .u-title{font-weight:700;font-size:0.86rem;margin-bottom:0.25rem}
+  .upload-zone .u-sub{color:var(--muted);font-size:0.74rem}
+  .upload-zone input[type=file]{display:none}
+  .file-chip{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);
+    border-radius:10px;padding:0.5rem 0.8rem;margin-top:0.6rem;font-size:0.8rem;color:var(--success);
+  }
+  .file-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .file-chip button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.74rem;text-decoration:underline;flex-shrink:0}
+
+  .btn-main{
+    width:100%;background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:#fff;border:none;border-radius:14px;padding:1rem;font-size:1rem;font-weight:700;
+    cursor:pointer;letter-spacing:0.2px;box-shadow:0 10px 30px rgba(56,189,248,0.3);
+    transition:transform 0.15s,box-shadow 0.2s;font-family:'DM Sans',sans-serif;
+  }
+  .btn-main:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(56,189,248,0.45)}
+  .btn-main:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+  .btn-back{
+    width:100%;background:transparent;color:var(--primary);
+    border:1.5px solid var(--primary);border-radius:12px;padding:0.85rem;
+    font-size:0.92rem;font-weight:700;cursor:pointer;margin-top:0.4rem;
+    font-family:'DM Sans',sans-serif;transition:all 0.2s;
+  }
+  .btn-back:hover{background:rgba(56,189,248,0.1);transform:translateY(-1px)}
+
+  .error{
+    background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.25);
+    border-radius:10px;padding:0.7rem 0.95rem;color:#fca5a5;font-size:0.88rem;margin-bottom:1rem;
+  }
+
+  .loading{text-align:center;padding:5rem 0}
+  .spinner{
+    width:54px;height:54px;margin:0 auto 1.5rem;
+    border:3px solid rgba(56,189,248,0.15);border-top-color:var(--primary);
+    border-radius:50%;animation:spin 0.8s linear infinite;
+  }
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .loading h3{font-family:'Syne',sans-serif;color:#7dd3fc;font-size:1.15rem;margin-bottom:0.5rem;font-weight:700}
+  .loading p{color:var(--muted);font-size:0.88rem}
+
+  .score-bar-wrap{height:8px;background:#0f172a;border-radius:8px;overflow:hidden}
+  .score-bar{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--primary),var(--success));transition:width 1s ease}
+
+  .status-banner{border-radius:12px;padding:0.85rem 1.1rem;font-size:0.92rem;font-weight:600;margin-bottom:1.1rem}
+  .status-success{background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);color:var(--success)}
+  .status-warn{background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);color:var(--warning)}
+
+  .role-row{
+    background:#0f172a;border-radius:10px;padding:0.8rem 1rem;
+    display:flex;justify-content:space-between;align-items:center;
+    flex-wrap:wrap;gap:8px;margin-bottom:8px;
+  }
+  .role-title{font-family:'Syne',sans-serif;font-weight:700;font-size:0.95rem}
+  .role-co{color:var(--muted);font-size:0.8rem;margin-top:3px}
+  .role-sal{color:var(--warning);font-weight:700;font-size:0.88rem}
+
+  .gap-row{background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:0.75rem 0.9rem;margin-bottom:8px}
+  .gap-skill{color:#fca5a5;font-weight:600;font-size:0.88rem}
+  .gap-fix{color:var(--muted);font-size:0.8rem;margin-top:4px}
+
+  .headline-box{
+    background:rgba(56,189,248,0.08);border:1px solid rgba(56,189,248,0.2);
+    border-radius:10px;padding:0.8rem 1rem;color:#7dd3fc;font-size:0.95rem;font-style:italic;
+  }
+
+  ul.tips{padding-left:18px}
+  ul.tips li{color:#cbd5e1;font-size:0.88rem;line-height:1.7;margin-bottom:6px}
+
+  .raw-pre{color:var(--muted);font-size:0.8rem;white-space:pre-wrap;word-break:break-word;line-height:1.7;font-family:'JetBrains Mono',monospace}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="Jagadeesh_Portfolio_Final_Corrected.html#ai-agent" class="back-link">← Back to Portfolio</a>
+  <span class="badge-pill">⚡ n8n + AI Agent</span>
+</div>
+
+<div class="header">
+  <div class="header-icon">🤖</div>
+  <h1>AI Job Hunter</h1>
+  <p class="subtitle">Upload your resume &amp; cover letter → get matched jobs, skill gaps &amp; resume tips</p>
+</div>
+
+<div class="wrap" id="app"></div>
+
+<script>
+const WEBHOOK = "https://jaggu17062004.app.n8n.cloud/webhook/job-hunter";
+
+const SKILLS = [
+  "Java","Spring Boot","Spring Security","Spring MVC","React JS","Redux",
+  "Microservices","REST API","GraphQL","Hibernate","JPA","MySQL","PostgreSQL",
+  "MongoDB","Redis","Docker","Kubernetes","AWS","Azure","Git","GitHub",
+  "CI/CD","Jenkins","JavaScript","TypeScript","Node.js","Express.js","Angular",
+  "Vue.js","HTML5","CSS3","Tailwind CSS","Bootstrap","Maven","Gradle",
+  "JUnit","Kafka","RabbitMQ","Linux","Agile/Scrum"
+];
+
+const PLACES = [
+  "Hyderabad","Bangalore","Pune","Chennai","Mumbai","Delhi NCR","Noida",
+  "Gurugram","Kolkata","Ahmedabad","Kochi","Coimbatore","Visakhapatnam",
+  "Remote (India)","Remote (Global)"
+];
+
+let state = {
+  step: "form",
+  form: { name:"", skills:[], experience:"", places:[] },
+  resumeFile: null,
+  coverFile: null,
+  parsingResume: false,
+  parsingCover: false,
+  skillSearch: "",
+  placeSearch: "",
+  skillOpen: false,
+  placeOpen: false,
+  result: null,
+  error: ""
+};
+
+const app = document.getElementById("app");
+
+function render() {
+  if (state.step === "form")    app.innerHTML = formHTML();
+  if (state.step === "loading") app.innerHTML = loadingHTML();
+  if (state.step === "result")  app.innerHTML = resultHTML();
+  bindEvents();
+}
+
+function dropdownField(opts) {
+  const { id, label, list, selected, search, open, placeholder } = opts;
+  const filtered = list.filter(s => s.toLowerCase().includes(search.toLowerCase()));
+  const chips = selected.map(s =>
+    '<span class="chip">' + s + '<button type="button" data-remove="' + id + '" data-val="' + s.replace(/"/g,'&quot;') + '">✕</button></span>'
+  ).join("");
+
+  const optsHtml = filtered.length ? filtered.map(s => {
+    const isPicked = selected.includes(s);
+    return '<div class="dropdown-opt ' + (isPicked ? "picked" : "") + '" data-pick="' + id + '" data-val="' + s.replace(/"/g,'&quot;') + '">' +
+      '<span>' + s + '</span>' + (isPicked ? '<span class="ck">✓</span>' : '') +
+      '</div>';
+  }).join("") : '<div class="dropdown-empty">No matches. Try a different search.</div>';
+
+  return '<div class="field">' +
+    '<label>' + label + ' <span class="count-tag">— ' + selected.length + ' selected</span></label>' +
+    '<div class="chips-selected">' + chips + '</div>' +
+    '<div class="dropdown-input-wrap">' +
+    '<input type="text" id="search-' + id + '" placeholder="' + placeholder + '" value="' + search + '" autocomplete="off" />' +
+    '<div class="dropdown-panel ' + (open ? "open" : "") + '" id="panel-' + id + '">' + optsHtml + '</div>' +
+    '</div></div>';
+}
+
+function formHTML() {
+  const form = state.form;
+
+  const expOptions = ["Fresher (0–1 yr)","Junior (1–2 yrs)","Mid (2–4 yrs)","Senior (4+ yrs)"]
+    .map(o => '<option ' + (form.experience===o?"selected":"") + '>' + o + '</option>').join("");
+
+  return (state.error ? '<div class="error">' + state.error + '</div>' : "") +
+    '<div class="card">' +
+      '<div class="card-label">Your details</div>' +
+      '<div class="row">' +
+        '<div class="field"><label>Your name</label><input id="f-name" placeholder="Jagadeesh K" value="' + form.name + '" /></div>' +
+        '<div class="field"><label>Experience</label><select id="f-exp"><option value="">Select level</option>' + expOptions + '</select></div>' +
+      '</div>' +
+      dropdownField({ id:"skill", label:"Your skills", list:SKILLS, selected:form.skills, search:state.skillSearch, open:state.skillOpen, placeholder:"Search 40+ skills — Java, React, AWS..." }) +
+      dropdownField({ id:"place", label:"Preferred locations", list:PLACES, selected:form.places, search:state.placeSearch, open:state.placeOpen, placeholder:"Search cities — Hyderabad, Remote..." }) +
+    '</div>' +
+
+    '<div class="card">' +
+      '<div class="card-label">Documents</div>' +
+      '<div class="file-row">' +
+        '<div>' +
+          '<label style="display:block;margin-bottom:7px">Resume (PDF)</label>' +
+          '<label for="f-resume-file"><div class="upload-zone" id="drop-resume">' +
+            '<div class="u-icon">📄</div>' +
+            '<div class="u-title">' + (state.parsingResume ? "Reading file..." : "Upload resume") + '</div>' +
+            '<div class="u-sub">PDF · click or drag &amp; drop</div>' +
+          '</div></label>' +
+          '<input type="file" id="f-resume-file" accept="application/pdf" />' +
+          (state.resumeFile ? '<div class="file-chip"><span>✅ ' + state.resumeFile.name + '</span><button type="button" id="btn-clear-resume">remove</button></div>' : "") +
+        '</div>' +
+        '<div>' +
+          '<label style="display:block;margin-bottom:7px">Cover letter (PDF)</label>' +
+          '<label for="f-cover-file"><div class="upload-zone" id="drop-cover">' +
+            '<div class="u-icon">✉️</div>' +
+            '<div class="u-title">' + (state.parsingCover ? "Reading file..." : "Upload cover letter") + '</div>' +
+            '<div class="u-sub">PDF · optional</div>' +
+          '</div></label>' +
+          '<input type="file" id="f-cover-file" accept="application/pdf" />' +
+          (state.coverFile ? '<div class="file-chip"><span>✅ ' + state.coverFile.name + '</span><button type="button" id="btn-clear-cover">remove</button></div>' : "") +
+        '</div>' +
+      '</div>' +
+    '</div>' +
+
+    '<button class="btn-main" id="btn-submit" ' + (state.parsingResume || state.parsingCover ? "disabled" : "") + '>🚀 Find My Jobs</button>';
+}
+
+function loadingHTML() {
+  return '<div class="loading"><div class="spinner"></div><h3>n8n AI agent is working...</h3><p>Searching jobs · analyzing resume · finding skill gaps</p></div>';
+}
+
+function resultHTML() {
+  const r = state.result;
+  const ai = parseAI(r);
+  const ok = r && r.status === "success";
+
+  let html = '<div class="status-banner ' + (ok ? "status-success" : "status-warn") + '">' +
+    (ok ? "✅ Jobs found for your profile!" : "⚠️ " + ((r && r.message) || "Analysis complete")) +
+    '</div>';
+
+  if (ai && ai.readinessScore != null) {
+    const sc = ai.readinessScore;
+    const col = sc >= 75 ? "var(--success)" : sc >= 50 ? "var(--warning)" : "var(--error)";
+    html += '<div class="card"><div class="card-label">Job readiness</div>' +
+      '<div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">' +
+      '<div style="font-family:\'Syne\',sans-serif;font-size:2.6rem;font-weight:800;color:' + col + '">' + sc + '%</div>' +
+      '<div style="flex:1;min-width:160px"><div class="score-bar-wrap"><div class="score-bar" style="width:' + sc + '%"></div></div>' +
+      (ai.summary ? '<p style="margin-top:10px;font-size:0.88rem;color:var(--muted);line-height:1.6">' + ai.summary + '</p>' : "") +
+      '</div></div></div>';
+  }
+
+  if (ai && ai.resumeHeadline) {
+    html += '<div class="card"><div class="card-label">✏️ Resume headline</div><div class="headline-box">"' + ai.resumeHeadline + '"</div></div>';
+  }
+
+  if (ai && ai.jobRoles && ai.jobRoles.length) {
+    const rows = ai.jobRoles.map(jr =>
+      '<div class="role-row"><div><div class="role-title">' + (jr.role || jr.title || "") + '</div>' +
+      '<div class="role-co">' + (jr.companies || jr.companyType || "") + '</div></div>' +
+      '<div class="role-sal">' + (jr.salary || jr.salaryRange || "") + '</div></div>'
+    ).join("");
+    html += '<div class="card"><div class="card-label">🎯 Recommended job roles</div>' + rows + '</div>';
+  }
+
+  if (ai && ai.skillGaps && ai.skillGaps.length) {
+    const rows = ai.skillGaps.map(g =>
+      '<div class="gap-row"><div class="gap-skill">⚠️ ' + g.skill + '</div>' +
+      '<div class="gap-fix">→ ' + (g.courseSuggestion || g.fix || g.suggestion || "") + '</div></div>'
+    ).join("");
+    html += '<div class="card"><div class="card-label">📚 Skill gaps</div>' + rows + '</div>';
+  }
+
+  if (ai && ai.resumeTips && ai.resumeTips.length) {
+    const lis = ai.resumeTips.map(t => '<li>' + t + '</li>').join("");
+    html += '<div class="card"><div class="card-label">💡 Resume tips</div><ul class="tips">' + lis + '</ul></div>';
+  }
+
+  if ((!ai || !ai.readinessScore) && r && r.data) {
+    html += '<div class="card"><div class="card-label">AI response</div><pre class="raw-pre">' +
+      (typeof r.data === "string" ? r.data : JSON.stringify(r.data, null, 2)) + '</pre></div>';
+  }
+
+  html += '<button class="btn-back" id="btn-reset">← Analyze another profile</button>';
+  return html;
+}
+
+function bindEvents() {
+  const submitBtn = document.getElementById("btn-submit");
+  if (submitBtn) submitBtn.addEventListener("click", function() { syncForm(); submit(); });
+
+  const resetBtn = document.getElementById("btn-reset");
+  if (resetBtn) resetBtn.addEventListener("click", function() {
+    state = { step:"form", form:{ name:"", skills:[], experience:"", places:[] },
+      resumeFile:null, coverFile:null, parsingResume:false, parsingCover:false,
+      skillSearch:"", placeSearch:"", skillOpen:false, placeOpen:false, result:null, error:"" };
+    render();
+  });
+
+  bindDropdown("skill", "skills");
+  bindDropdown("place", "places");
+
+  bindFileUpload("f-resume-file", "drop-resume", "resumeFile", "parsingResume", "btn-clear-resume");
+  bindFileUpload("f-cover-file", "drop-cover", "coverFile", "parsingCover", "btn-clear-cover");
+
+  document.removeEventListener("click", outsideClickHandler);
+  document.addEventListener("click", outsideClickHandler);
+}
+
+function outsideClickHandler(e) {
+  let changed = false;
+  if (state.skillOpen && !e.target.closest("#search-skill") && !e.target.closest("#panel-skill")) {
+    state.skillOpen = false; changed = true;
+  }
+  if (state.placeOpen && !e.target.closest("#search-place") && !e.target.closest("#panel-place")) {
+    state.placeOpen = false; changed = true;
+  }
+  if (changed) render();
+}
+
+function bindDropdown(id, formKey) {
+  const input = document.getElementById("search-" + id);
+  if (input) {
+    input.addEventListener("focus", function() {
+      state[id + "Open"] = true;
+      render();
+      const el = document.getElementById("search-" + id);
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
+    input.addEventListener("input", function() {
+      state[id + "Search"] = input.value;
+      state[id + "Open"] = true;
+      syncForm();
+      render();
+      const el = document.getElementById("search-" + id);
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
+    input.addEventListener("click", function(e) { e.stopPropagation(); });
+  }
+
+  document.querySelectorAll('[data-pick="' + id + '"]').forEach(function(opt) {
+    opt.addEventListener("click", function(e) {
+      e.stopPropagation();
+      const val = opt.dataset.val;
+      const arr = state.form[formKey];
+      const idx = arr.indexOf(val);
+      if (idx === -1) arr.push(val); else arr.splice(idx, 1);
+      syncForm();
+      render();
+      const el = document.getElementById("search-" + id);
+      if (el) { el.focus(); el.setSelectionRange(el.value.length, el.value.length); }
+    });
+  });
+
+  document.querySelectorAll('[data-remove="' + id + '"]').forEach(function(btn) {
+    btn.addEventListener("click", function(e) {
+      e.stopPropagation();
+      const val = btn.dataset.val;
+      const arr = state.form[formKey];
+      const idx = arr.indexOf(val);
+      if (idx !== -1) arr.splice(idx, 1);
+      syncForm();
+      render();
+    });
+  });
+
+  const panel = document.getElementById("panel-" + id);
+  if (panel) panel.addEventListener("click", function(e) { e.stopPropagation(); });
+}
+
+function bindFileUpload(inputId, zoneId, stateKey, parsingKey, clearBtnId) {
+  const realInput = document.getElementById(inputId);
+  if (realInput) realInput.addEventListener("change", function(e) { handleFile(e.target.files[0], stateKey, parsingKey); });
+
+  const dropZone = document.getElementById(zoneId);
+  if (dropZone) {
+    dropZone.addEventListener("dragover", function(e) { e.preventDefault(); dropZone.classList.add("dragover"); });
+    dropZone.addEventListener("dragleave", function() { dropZone.classList.remove("dragover"); });
+    dropZone.addEventListener("drop", function(e) {
+      e.preventDefault();
+      dropZone.classList.remove("dragover");
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0], stateKey, parsingKey);
+    });
+  }
+
+  const clearBtn = document.getElementById(clearBtnId);
+  if (clearBtn) clearBtn.addEventListener("click", function(e) {
+    e.stopPropagation();
+    state[stateKey] = null;
+    render();
+  });
+}
+
+function syncForm() {
+  const n = document.getElementById("f-name");
+  const e = document.getElementById("f-exp");
+  if (n) state.form.name = n.value;
+  if (e) state.form.experience = e.value;
+}
+
+async function handleFile(file, stateKey, parsingKey) {
+  if (!file) return;
+  if (file.type !== "application/pdf") {
+    state.error = "Please upload a PDF file.";
+    render();
+    return;
+  }
+  state.error = "";
+  state[parsingKey] = true;
+  render();
+
+  try {
+    const base64 = await fileToBase64(file);
+    state[stateKey] = { name: file.name, mimeType: file.type, base64: base64 };
+  } catch (err) {
+    state.error = "Couldn't read that file. Please try again.";
+    state[stateKey] = null;
+  }
+  state[parsingKey] = false;
+  render();
+}
+
+function fileToBase64(file) {
+  return new Promise(function(resolve, reject) {
+    const reader = new FileReader();
+    reader.onload = function() { resolve(reader.result.split(",")[1]); };
+    reader.onerror = function() { reject(new Error("read failed")); };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function submit() {
+  if (!state.form.skills.length && !state.resumeFile) {
+    state.error = "Please select at least one skill or upload your resume.";
+    render(); return;
+  }
+  state.error = "";
+  state.step = "loading";
+  render();
+
+  try {
+    const payload = {
+      name: state.form.name || "Candidate",
+      skills: state.form.skills,
+      experience: state.form.experience || "Fresher",
+      locations: state.form.places,
+      sessionId: "user_" + Date.now()
+    };
+    if (state.resumeFile) {
+      payload.resume = {
+        fileName: state.resumeFile.name,
+        mimeType: state.resumeFile.mimeType,
+        base64: state.resumeFile.base64
+      };
+    }
+    if (state.coverFile) {
+      payload.coverLetter = {
+        fileName: state.coverFile.name,
+        mimeType: state.coverFile.mimeType,
+        base64: state.coverFile.base64
+      };
+    }
+
+    const res = await fetch(WEBHOOK, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    state.result = data;
+    state.step = "result";
+  } catch (e) {
+    state.error = "Could not reach the AI agent. Check your n8n webhook is active and published.";
+    state.step = "form";
+  }
+  render();
+}
+
+function parseAI(r) {
+  if (!r) return null;
+  const raw = r.data != null ? r.data : r;
+  if (typeof raw === "object") return raw;
+  try { return JSON.parse(String(raw).replace(/```json|```/g, "").trim()); }
+  catch (e) { return null; }
+}
+
+render();
+</script>
+</body>
+</html>
