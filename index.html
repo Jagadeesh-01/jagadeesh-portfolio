@@ -48,6 +48,8 @@ nav.scrolled{background:rgba(15,23,42,0.92);backdrop-filter:blur(20px);border-bo
 .nav-links a:hover{color:var(--primary)}
 .nav-cta{padding:0.7rem 1.8rem;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--secondary));color:#fff;font-weight:700;text-decoration:none;transition:all 0.3s;box-shadow:0 8px 25px rgba(56,189,248,0.3);cursor:pointer;border:none;font-size:0.9rem}
 .nav-cta:hover{transform:translateY(-2px);box-shadow:0 12px 35px rgba(56,189,248,0.5)}
+.nav-ai-cta{background:linear-gradient(135deg,#8B5CF6,#38BDF8);box-shadow:0 8px 25px rgba(139,92,246,0.3);margin-right:0.6rem}
+.nav-ai-cta:hover{box-shadow:0 12px 35px rgba(139,92,246,0.5)}
 .mobile-toggle{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer}
 .mobile-toggle span{width:26px;height:2.5px;background:var(--text);border-radius:2px;transition:all 0.3s}
 @media(max-width:768px){
@@ -478,6 +480,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;background:rgba(30,4
       <a href="#hobbies">Hobbies</a>
       <a href="#contact">Contact</a>
     </div>
+    <a href="ai-job-hunter.html" class="nav-cta nav-ai-cta">🤖 AI Agent</a>
     <a href="mailto:dolujagadish20@gmail.com" class="nav-cta">Hire Me</a>
     <button class="mobile-toggle" onclick="toggleMobileMenu()">
       <span></span><span></span><span></span>
@@ -519,7 +522,7 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;background:rgba(30,4
           <a href="mailto:dolujagadish20@gmail.com?subject=Job Opportunity - Jagadeesh Dolu&body=Hi Jagadeesh, I came across your portfolio and would like to discuss a job opportunity with you." class="btn btn-primary">Hire Me →</a>
           <a href="#projects" class="btn btn-outline">View Projects</a>
           <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-          <a href="https://drive.google.com/file/d/1eLFYJh0l_TQdaF1EiqpFRScXAL0Z8SWB/view?usp=sharing" target="_blank" rel="noopener" class="btn" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;box-shadow:0 10px 30px rgba(16,185,129,0.3);">📄 Resume</a>
+          <a href="https://drive.google.com/file/d/1eLFYJh0l_TQdaF1EiqpFRScXAL0Z8SWB/view?usp=drive_link" target="_blank" rel="noopener" class="btn" style="background:linear-gradient(135deg,#10B981,#059669);color:#fff;box-shadow:0 10px 30px rgba(16,185,129,0.3);">📄 Resume</a>
         </div>
         <div class="hero-stats">
           <div class="stat-item">
@@ -866,6 +869,65 @@ footer{border-top:1px solid var(--border);padding:3rem 2rem;background:rgba(30,4
           </div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== AI JOB HUNTER AGENT ===== -->
+<section id="ai-agent" class="section">
+  <div class="container">
+    <div style="text-align:center;margin-bottom:3rem;animation:fadeInUp 0.8s ease">
+      <span style="display:inline-block;background:rgba(139,92,246,0.12);border:1px solid rgba(139,92,246,0.35);color:#A78BFA;font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:700;letter-spacing:0.08em;padding:0.5rem 1.1rem;border-radius:30px;margin-bottom:1.2rem">
+        🤖 Live AI Tool — Built by Jagadeesh
+      </span>
+      <h2 class="section-title">AI Job Hunter Agent</h2>
+      <p style="max-width:680px;margin:1.2rem auto 0;color:var(--muted);font-size:1.05rem;line-height:1.8">
+        A live AI-powered agent built with n8n that analyzes your resume, finds matching jobs, detects skill gaps, and gives instant career coaching — all in under 10 seconds.
+      </p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;margin-bottom:3rem">
+      <div class="card" style="text-align:center">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem">📤</div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.6rem">Upload Resume</h3>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.6">Upload your PDF resume or paste your text directly</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem">🤖</div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.6rem">AI Analysis</h3>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.6">n8n AI agent scans your skills, experience and location instantly</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem">💼</div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.6rem">Job Matches</h3>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.6">Get matched job roles, salary ranges and direct apply links</p>
+      </div>
+      <div class="card" style="text-align:center">
+        <div style="font-size:2.2rem;margin-bottom:0.8rem">📚</div>
+        <h3 style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:0.6rem">Skill Gap Report</h3>
+        <p style="color:var(--muted);font-size:0.92rem;line-height:1.6">Know exactly what to learn next with specific course suggestions</p>
+      </div>
+    </div>
+
+    <div style="text-align:center">
+      <img src="AI_JOB_HUNTER_IMG.jpeg" alt="AI Job Hunter Agent n8n workflow" style="width:100%;max-width:850px;border-radius:16px;border:1px solid rgba(52,211,153,0.4);box-shadow:0 0 40px rgba(52,211,153,0.2)" />
+      <p style="color:#34D399;font-size:0.85rem;text-align:center;margin-top:1rem">
+        ✅ Live n8n AI Agent Workflow — All nodes successfully running
+      </p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:0.6rem;margin-top:1.2rem">
+        <span class="tech-tag">n8n</span>
+        <span class="tech-tag">OpenRouter AI</span>
+        <span class="tech-tag">GPT-4o-mini</span>
+        <span class="tech-tag">Webhook API</span>
+        <span class="tech-tag">PDF.js</span>
+        <span class="tech-tag">JavaScript</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:3rem">
+      <a href="ai-job-hunter.html" style="display:inline-block;background:linear-gradient(135deg,#6366f1,#0ea5e9);color:#fff;font-weight:700;font-size:1.05rem;padding:1rem 2.6rem;border-radius:14px;text-decoration:none;box-shadow:0 15px 40px rgba(99,102,241,0.4);transition:all 0.3s" onmouseover="this.style.transform='translateY(-3px)'" onmouseout="this.style.transform='translateY(0)'">
+        🚀 Try AI Job Hunter Now →
+      </a>
     </div>
   </div>
 </section>
